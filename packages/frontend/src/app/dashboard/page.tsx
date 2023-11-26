@@ -1,8 +1,8 @@
-import Button from "@/components/button"
 import { NextPage } from "next"
 import { Session, getServerSession } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
+import Navbar from "@/components/navbar"
 
 const DashboardPage: NextPage<{}> = async () => {
   const session: Session | null = await getServerSession(authOptions)
@@ -12,8 +12,7 @@ const DashboardPage: NextPage<{}> = async () => {
 
   return (
     <div>
-      This is DashboardPage
-      <Button text="Sign Out" />
+      <Navbar />
     </div>
   )
 }
