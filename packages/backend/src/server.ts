@@ -1,6 +1,5 @@
 import express from "express"
 import { Server as OvernightServer } from "@overnightjs/core"
-import { DataSource } from "typeorm"
 import UserController from "./resources/user/controller"
 import { container } from "tsyringe"
 import MongoConn from "./db"
@@ -25,6 +24,8 @@ class Server extends OvernightServer {
   }
 
   private async loadDatabase() {
+    await new MongoConn().loadConnection()
+
     container.resolve(MongoConn)
   }
 

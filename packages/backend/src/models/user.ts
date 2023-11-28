@@ -1,22 +1,14 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm"
-import Provider from "./provider"
+import mongoose from "mongoose"
+import ProviderSchema from "./provider"
 
-@Entity()
-class User {
-  @ObjectIdColumn()
-  id?: ObjectId
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  image: String,
+  providersId: [String],
+  providers: [ProviderSchema],
+})
 
-  @Column()
-  username: string
-
-  @Column()
-  email: string
-
-  @Column()
-  image: string
-
-  @Column(() => Provider)
-  providers: Provider[]
-}
+const User = mongoose.model("User", userSchema)
 
 export default User

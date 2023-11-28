@@ -1,12 +1,8 @@
-import { Column, Entity, PrimaryColumn } from "typeorm"
+import mongoose from "mongoose"
 
-@Entity()
-class Provider {
-  @PrimaryColumn()
-  providerAccountId: string
+const ProviderSchema = new mongoose.Schema({
+  providerAccountId: String,
+  provider: String,
+})
 
-  @Column()
-  provider: string
-}
-
-export default Provider
+export default ProviderSchema

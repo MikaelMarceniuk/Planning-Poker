@@ -1,23 +1,17 @@
-import path from "path"
+import mongoose, { Mongoose } from "mongoose"
 import { singleton } from "tsyringe"
-import { DataSource } from "typeorm"
 
 @singleton()
 class MongoConn {
-  private instance: DataSource
+  private instance: Mongoose
 
   public async getInstance() {
     if (!this.instance) {
-      const dbSource = new DataSource({
-        type: "mongodb",
-        host: process.env.MONGODB_HOST,
-        port: Number(process.env.MONGODB_PORT),
-        database: process.env.MONGODB_DB,
-        entities: [path.resolve(__dirname, "..", "models", "*.js")],
-      })
+      let dbSource: Mongoose
 
       try {
-        await dbSource.initialize()
+        console.log("Creating new instance")
+        dbSource = await mongoose.connect(this.createConnString())
         console.log("Connected to MongoDb")
       } catch (e: any) {
         throw new Error("Could not connect to database: " + e.message)
@@ -27,6 +21,23 @@ class MongoConn {
     }
 
     return this.instance
+  }
+
+  public async loadConnection() {
+    try {
+      await mongoose.connect(this.createConnString())
+      console.log("Connected to MongoDb")
+    } catch (e: any) {
+      throw new Error("Could not connect to database: " + e.message)
+    }
+  }
+
+  private createConnString() {
+    const host = process.env.MONGODB_HOST
+    const port = Number(process.env.MONGODB_PORT)
+    const database = process.env.MONGODB_DB
+
+    return `mongodb://${host}:${port}/${database}`
   }
 }
 

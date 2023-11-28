@@ -8,6 +8,13 @@ import UserService from "./service"
 class UserController {
   constructor(private userService: UserService) {}
 
+  @Get(":providerId")
+  private async getUserByProviderId(req: Request, res: Response) {
+    const { providerId } = req.params
+
+    res.send(await this.userService.getUserByProviderId(providerId))
+  }
+
   @Post()
   private async create(req: Request, res: Response) {
     await this.userService.createUser(req.body)

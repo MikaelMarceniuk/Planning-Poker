@@ -1,14 +1,14 @@
 import { singleton } from "tsyringe"
-import MongoConn from "../db"
 import User from "../models/user"
 
 @singleton()
 class UserRepository {
-  constructor(private mongoConn: MongoConn) {}
+  async getUserByProviderId(providerId: string) {
+    return await User.find({ providersId: [providerId] })
+  }
 
-  async createUser(newUser: User) {
-    const mongoInstance = await this.mongoConn.getInstance()
-    return await mongoInstance.getRepository(User).save(newUser)
+  async createUser(newUser: typeof User) {
+    await User.create(newUser)
   }
 }
 
