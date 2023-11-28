@@ -1,15 +1,21 @@
-import express, { Express } from "express"
+import express from "express"
+import { Server as OvernightServer } from "@overnightjs/core"
 import { DataSource } from "typeorm"
+import UserController from "./resources/user/controller"
+import { container } from "tsyringe"
+import MongoConn from "./db"
+import UserRepository from "./repository/userRepository"
 
-class Server {
-  app: Express
-
+class Server extends OvernightServer {
   constructor() {
-    this.app = express()
+    super(true)
   }
 
   async init() {
     await this.loadDatabase()
+    await this.loadMiddlewares()
+    await this.loadControllers()
+    await this.loadRepositories()
 
     this.app.get("/api", (req, res) => res.json({ msg: "Hello World!" }))
 
@@ -19,19 +25,21 @@ class Server {
   }
 
   private async loadDatabase() {
-    const MongoDbSource = new DataSource({
-      type: "mongodb",
-      host: process.env.MONGODB_HOST,
-      port: Number(process.env.MONGODB_PORT),
-      database: process.env.MONGODB_DB,
-    })
+    container.resolve(MongoConn)
+  }
 
-    try {
-      await MongoDbSource.initialize()
-      console.log("Connected to MongoDb")
-    } catch (e) {
-      throw new Error("Could not connect to database")
-    }
+  private loadMiddlewares() {
+    this.app.use(express.json())
+  }
+
+  private loadControllers() {
+    const userController = container.resolve(UserController)
+
+    super.addControllers([userController])
+  }
+
+  private loadRepositories() {
+    container.resolve(UserRepository)
   }
 }
 

@@ -1,7 +1,6 @@
-import NextAuth, { getServerSession } from "next-auth"
+import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import DiscordProvider from "next-auth/providers/discord"
-import GoogleProvider from "next-auth/providers/google"
 
 const handler = NextAuth({
   providers: [
