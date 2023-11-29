@@ -11,8 +11,6 @@ interface IProps {
 }
 
 const UserMenu: React.FC<IProps> = ({ src, alt }) => {
-  const { data: session, status } = useSession()
-
   return (
     <div className="w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
