@@ -2,7 +2,7 @@
 
 import { Fragment } from "react"
 import Image from "next/image"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { Menu, Transition } from "@headlessui/react"
 
 interface IProps {
@@ -11,6 +11,8 @@ interface IProps {
 }
 
 const UserMenu: React.FC<IProps> = ({ src, alt }) => {
+  const { data: session, status } = useSession()
+
   return (
     <div className="w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">

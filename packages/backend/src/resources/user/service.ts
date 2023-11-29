@@ -7,11 +7,17 @@ class UserService {
   constructor(private userRepo: UserRepository) {}
 
   async getUserByProviderId(providerId: string) {
-    return await this.userRepo.getUserByProviderId(providerId)
+    const [dbUser] = await this.userRepo.getUserByProviderId(providerId)
+    return dbUser
   }
 
   async createUser(newUser: any) {
-    const dbUser = new User({
+    let dbUser = await this.userRepo.getUserByProviderId(
+      newUser.providerAccountId
+    )
+    if (dbUser.length > 0) return
+
+    let newDbUser = new User({
       username: newUser.username,
       email: newUser.email,
       image: newUser.image,
@@ -25,7 +31,7 @@ class UserService {
     })
 
     // @ts-ignore
-    await this.userRepo.createUser(dbUser)
+    await this.userRepo.createUser(newDbUser)
   }
 }
 

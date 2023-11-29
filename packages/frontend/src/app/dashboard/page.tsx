@@ -6,9 +6,7 @@ import Navbar from "@/components/navbar"
 
 const DashboardPage: NextPage<{}> = async () => {
   const session: Session | null = await getServerSession(authOptions)
-  if (!session?.user) {
-    redirect("sign-in")
-  }
+  if (!session?.user) redirect("sign-in")
 
   return (
     <div>
