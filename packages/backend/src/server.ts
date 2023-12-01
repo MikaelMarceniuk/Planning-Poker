@@ -1,18 +1,46 @@
-import express, { Express } from "express"
+import express from "express"
+import { Server as OvernightServer } from "@overnightjs/core"
+import UserController from "./resources/user/controller"
+import { container } from "tsyringe"
+import MongoConn from "./db"
+import UserRepository from "./repository/userRepository"
 
-class Server {
-  app: Express
-
+class Server extends OvernightServer {
   constructor() {
-    this.app = express()
+    super(true)
   }
 
-  init() {
+  async init() {
+    await this.loadDatabase()
+    await this.loadMiddlewares()
+    await this.loadControllers()
+    await this.loadRepositories()
+
     this.app.get("/api", (req, res) => res.json({ msg: "Hello World!" }))
 
     this.app.listen(process.env.PORT, () =>
       console.log("Server is up and running!")
     )
+  }
+
+  private async loadDatabase() {
+    await new MongoConn().loadConnection()
+
+    container.resolve(MongoConn)
+  }
+
+  private loadMiddlewares() {
+    this.app.use(express.json())
+  }
+
+  private loadControllers() {
+    const userController = container.resolve(UserController)
+
+    super.addControllers([userController])
+  }
+
+  private loadRepositories() {
+    container.resolve(UserRepository)
   }
 }
 
